@@ -1,0 +1,27 @@
+1. Verify that you have MySQL and Apache installed.
+   If you do not, do not continue.
+2. Apache should be configured as follows:
+   * CGI enabled
+   * SSI enabled
+   * SSL enabled
+3. MySQL should be configured as follows:
+   * SSL enabled
+4. Run the setup.sql script.
+   (mysql -u root -p < setup.sql)
+5. Modify the Makefile, particulary the CGI_PATH variable.
+6. Run make. If problems arise, please modify the Makefile to suit
+   your OS.
+7. Run make install.
+8. Password protect the Numismatic directory. This is the directory
+   where the HTML files reside, not the CGI directory.
+   This step is very important as userids are necessary for the program
+   to function correctly. Look at the httpd.conf file.
+   a. Modify httpd.conf, adding AllowOverride AuthConfig to the
+      appropriate section (DocumentRoot).
+   b. Execute "htpasswd -c /etc/apache-ssl/users user", where user
+      represents the userid that you'd like to use.
+   c. Create a .htaccess file in the numismatic.d directory that contains:
+   	AuthName "Restricted"
+	AuthType Basic
+	AuthUserFile /etc/apache-ssl/users
+	require valid-user
