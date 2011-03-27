@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
       for(i = YEAR_START; i <= YEAR_END; i++)
 	{
 	  (void) memset(itmp, 0, sizeof(itmp));
-	  (void) snprintf(itmp, sizeof(itmp), "%d", i);
+	  (void) snprintf(itmp, sizeof(itmp), "%ud", i);
 	  (void) printf("<option>%s", itmp);
 	}
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
       for(i = 1; i <= MAX_QUAN; i++)
 	{
 	  (void) memset(itmp, 0, sizeof(itmp));
-	  (void) snprintf(itmp, sizeof(itmp), "%d", i);
+	  (void) snprintf(itmp, sizeof(itmp), "%ud", i);
 	  (void) printf("<option>%s", itmp);
 	}
 
