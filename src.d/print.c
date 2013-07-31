@@ -14,8 +14,8 @@ static MYSQL *connection = NULL;
 
 int main(int argc, char *argv[])
 {
-  int i = 0;
-  int j = 0;
+  unsigned int i = 0;
+  unsigned int j = 0;
   int ct = 0;
   char query[MAX_2];
   MYSQL_RES *res_set = NULL;

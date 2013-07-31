@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
   (void) printf("<title>Numismatic - Add</title>\n");
   (void) printf("<body bgcolor=\"white\">\n");
 
-  if(strstr(argv[1], "?") == NULL)
+  if(argc >= 2 && strstr(argv[1], "?") == NULL)
     {
       (void) printf("<form action=\"/cgi-bin/numismatic/add.cgi?%s?\" "
 		    "method=\"post\">\n", argv[1]);

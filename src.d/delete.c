@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  if(argv[1] != NULL)
+  if(argc >= 2 && argv[1] != NULL)
     {
       tmp = strtok(argv[1], ",");
       (void) printf("%s\n", FBEG);

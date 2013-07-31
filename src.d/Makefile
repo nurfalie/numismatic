@@ -1,5 +1,5 @@
 CGI_PATH	=	/usr/lib/cgi-bin/numismatic
-OPTIONS		=	-Wall -pedantic
+OPTIONS		=	-Wall -Wextra -Wstack-protector -fPIE -fstack-protector-all -pedantic -pie
 GCC		=	gcc
 CP		=	cp
 RM		=	rm
