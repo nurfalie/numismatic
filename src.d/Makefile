@@ -1,5 +1,6 @@
 CGI_PATH	=	/usr/lib/cgi-bin/numismatic
-OPTIONS		=	-Wall -Wextra -Wstack-protector -fPIE -fstack-protector-all -pedantic -pie
+OPTIONS		=	-Wall -Wextra -Wstack-protector \
+			-fPIE -fstack-protector-all -pedantic -pie
 GCC		=	gcc
 CP		=	cp
 RM		=	rm
@@ -21,25 +22,26 @@ ADD_SRCS	=	add.c
 PRINT_SRCS	=	print.c
 
 INCLUDE_PATH	=	-I/usr/include -I/usr/local/include
-LIB		=	-L/usr/lib -lmysqlclient
+LIBS		=	-lm -L/usr/lib -lmysqlclient
 
 load_all:	$(INCLUDES) $(LOAD_ALL_SRCS)
 		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o load_all \
-		$(LOAD_ALL_SRCS) $(LIB)
+		$(LOAD_ALL_SRCS) $(LIBS)
 
 edit:		$(INCLUDES) $(EDIT_SRCS)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o edit $(EDIT_SRCS) $(LIB)
+		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o edit $(EDIT_SRCS) \
+		$(LIBS)
 
 delete:		$(INCLUDES) $(DELETE_SRCS)
 		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o delete $(DELETE_SRCS) \
-		$(LIB)
+		$(LIBS)
 
 add:		$(INCLUDES) $(ADD_SRCS)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIB)
+		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIBS)
 
 print:		$(INCLUDES) $(PRINT_SRCS)
 		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o print $(PRINT_SRCS) \
-		$(LIB)
+		$(LIBS)
 
 install:
 		$(MKDIR) $(CGI_PATH)
