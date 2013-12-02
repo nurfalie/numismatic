@@ -33,7 +33,6 @@
 */
 
 #include <ctype.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -131,42 +130,30 @@ void update(char field[], char *tmp,
 	  else
 	    tmpstr[0] = (char) strtol(hex, &stop, 16);
 
-	  (void) strncat(tmpstr1, tmpstr,
-			 fmin(sizeof(tmpstr1) - strlen(tmpstr1) - 1,
-			      strlen(tmpstr)));
+	  (void) strlcat(tmpstr1, tmpstr, sizeof(tmpstr1));
 	  i += 2;
 	}
       else if(tmp[i] == '+')
 	{
-	  (void) strncat(tmpstr1, " ",
-			 fmin(sizeof(tmpstr1) - strlen(tmpstr1) - 1,
-			      strlen(" ")));
+	  (void) strlcat(tmpstr1, " ", sizeof(tmpstr1));
 	}
       else if(tmp[i] == '=')
 	{
 	  (void) memset(tmpstr, 0, sizeof(tmpstr));
 	  tmpstr[0] = '\'';
-	  (void) strncat(tmpstr1, "=",
-			 fmin(sizeof(tmpstr1) - strlen(tmpstr1) - 1,
-			      strlen("=")));
-	  (void) strncat(tmpstr1, tmpstr,
-			 fmin(sizeof(tmpstr1) - strlen(tmpstr1) - 1,
-			      strlen(tmpstr)));
+	  (void) strlcat(tmpstr1, "=", sizeof(tmpstr1));
+	  (void) strlcat(tmpstr1, tmpstr, sizeof(tmpstr1));
 	}
       else if(isalnum(tmp[i]) || isblank(tmp[i]) || tmp[i] == '.' ||
 	      tmp[i] == '-')
 	{
 	  (void) memset(tmpstr, 0, sizeof(tmpstr));
 	  tmpstr[0] = tmp[i];
-	  (void) strncat(tmpstr1, tmpstr,
-			 fmin(sizeof(tmpstr1) - strlen(tmpstr1) - 1,
-			      strlen(tmpstr)));
+	  (void) strlcat(tmpstr1, tmpstr, sizeof(tmpstr1));
 	}
     }
 
-  (void) strncat(tmpstr1, "'",
-		 fmin(sizeof(tmpstr1) - strlen(tmpstr1) - 1,
-		      strlen("'")));
+  (void) strlcat(tmpstr1, "'", sizeof(tmpstr1));
 
   for(i = 0; i < strlen(tmpstr1) - 1; i++)
     {
@@ -180,29 +167,20 @@ void update(char field[], char *tmp,
 	  */
 
 	  if(type == ADD)
-	    (void) strncat
-	      (field, "NULL",
-	       fmin(field_size - strlen(field) - 1,
-		    strlen("NULL")));
+	    (void) strlcat(field, "NULL", field_size);
 	  else if(type == EDIT)
-	    (void) strncat
-	      (field, "", fmin(field_size - strlen(field) - 1,
-			       strlen("")));
+	    (void) strlcat(field, "", field_size);
 	}
       else
 	{
 	  tmpstr[0] = tmpstr1[i];
-	  (void) strncat
-	    (field, tmpstr, fmin(field_size - strlen(field) - 1,
-				 strlen(tmpstr)));
+	  (void) strlcat(field, tmpstr, field_size);
 	}
     }
 
   if(c == 0)
     {
-      (void) strncat
-	(field, "'", fmin(field_size - strlen(field) - 1,
-			  strlen("'")));
+      (void) strlcat(field, "'", field_size);
     }
 
   if(strcmp(field, "description=") == 0)

@@ -273,10 +273,7 @@ int main(int argc, char *argv[])
 
       (void) memset(field, 0, sizeof(field));
       (void) memset(querystr, 0, sizeof(querystr));
-      (void) strncpy
-	(querystr, "UPDATE coin SET ",
-	 fmin(sizeof(querystr) - strlen(querystr) - 1,
-	      strlen("UPDATE coin SET ")));
+      (void) strlcpy(querystr, "UPDATE coin SET ", sizeof(querystr));
 
       while(tmp != NULL)
 	{
@@ -291,29 +288,17 @@ int main(int argc, char *argv[])
 	      else
 		{
 		  (void) memset(field, 0, sizeof(field));
-		  (void) strncpy
-		    (field, tmp, fmin(sizeof(field) - strlen(field) - 1,
-				      strlen(tmp)));
+		  (void) strlcpy(field, tmp, sizeof(field));
 		}
 
-	      (void) strncat
-		(querystr, field,
-		 fmin(sizeof(querystr) - strlen(querystr) - 1,
-		      strlen(field)));
-	      (void) strncat
-		(querystr, ", ",
-		 fmin(sizeof(querystr) - strlen(querystr) - 1,
-		      strlen(", ")));
+	      (void) strlcat(querystr, field, sizeof(querystr));
+	      (void) strlcat(querystr, ", ", sizeof(querystr));
 	    }
 	}
 
       querystr[strlen(querystr) - 2] = '\0';
-      (void) strncat
-	(querystr, " WHERE ", fmin(sizeof(querystr) - strlen(querystr) - 1,
-				   strlen(" WHERE ")));
-      (void) strncat
-	(querystr, id, fmin(sizeof(querystr) - strlen(querystr) - 1,
-			    strlen(id)));
+      (void) strlcat(querystr, " WHERE ", sizeof(querystr));
+      (void) strlcat(querystr, id, sizeof(querystr));
 
     error:
 

@@ -77,15 +77,11 @@ int main(int argc, char *argv[])
 
   if(argc > 1)
     {
-      (void) strncpy
-	(indata, argv[1], fmin(sizeof(indata) - strlen(indata) - 1,
-			       strlen(argv[1])));
+      (void) strlcpy(indata, argv[1], sizeof(indata));
     }
   else
     {
-      (void) strncpy
-	(indata, "name", fmin(sizeof(indata) - strlen(indata) - 1,
-			      strlen("name")));
+      (void) strlcpy(indata, "name", sizeof(indata));
     }
 
   /*

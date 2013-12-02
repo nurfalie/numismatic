@@ -177,9 +177,7 @@ int main(int argc, char *argv[])
       ** -2 => ganoof\?, we need to remove the \?.
       */
 
-      (void) strncpy(user_name, argv[1], fmin(sizeof(user_name) -
-					      strlen(user_name) - 1,
-					      strlen(argv[1]) - 2));
+      (void) strlcpy(user_name, argv[1], sizeof(user_name));
       (void) memset(querystr, 0, sizeof(querystr));
       (void) snprintf(querystr,
 		      sizeof(querystr),
@@ -219,9 +217,8 @@ int main(int argc, char *argv[])
 	}
 
       tmp = strtok(indata, "&");
-      (void) strncpy(querystr, "INSERT INTO coin VALUES (",
-		     fmin(sizeof(querystr) - strlen(querystr) - 1,
-			  strlen("INSERT INTO coin VALUES (")));
+      (void) strlcpy(querystr, "INSERT INTO coin VALUES (",
+		     sizeof(querystr));
 
       while(tmp != NULL)
 	{
@@ -231,38 +228,24 @@ int main(int argc, char *argv[])
 	    }
 	  else
 	    {
-	      (void) strncpy(field, tmp,
-			     fmin(sizeof(field) - strlen(field) - 1,
-				  strlen(tmp)));
+	      (void) strlcpy(field, tmp, sizeof(field));
 	    }
 
-	  (void) strncat
-	    (querystr, field, fmin(sizeof(querystr) - strlen(querystr) - 1,
-				   strlen(field)));
-	  (void) strncat
-	    (querystr, ", ", fmin(sizeof(querystr) - strlen(querystr) - 1,
-				  strlen(", ")));
+	  (void) strlcat(querystr, field, sizeof(querystr));
+	  (void) strlcat(querystr, ", ", sizeof(querystr));
 	  tmp = strtok(NULL, "&");
 	}
 
       querystr[strlen(querystr) - 2] = '\0';
-      (void) strncat(querystr, ",",
-		     fmin(sizeof(querystr) - strlen(querystr) - 1,
-			  strlen(",")));
-      (void) strncat
-	(querystr, id, fmin(sizeof(querystr) - strlen(querystr) - 1,
-			    strlen(id)));
-      (void) strncat(querystr, ")",
-		     fmin(sizeof(querystr) - strlen(querystr) - 1,
-			  strlen(")")));
+      (void) strlcat(querystr, ",", sizeof(querystr));
+      (void) strlcat(querystr, id, sizeof(querystr));
+      (void) strlcat(querystr, ")", sizeof(querystr));
       i = 0;
 
       while(querystr[i] != '(' && i++ < strlen(querystr));
 
       (void) memset(querystr1, 0, sizeof(querystr1));
-      (void) strncpy(querystr1, querystr,
-		     fmin(sizeof(querystr1) - strlen(querystr1) - 1,
-			  i + 1));
+      (void) strlcpy(querystr1, querystr, sizeof(querystr1));
       k = 0;
       j = strlen(querystr1);
 
@@ -276,21 +259,11 @@ int main(int argc, char *argv[])
 	  }
       }
 
-      (void) strncat(querystr1, ",",
-		     fmin(sizeof(querystr1) - strlen(querystr1) - 1,
-			  strlen(",")));
-      (void) strncat(querystr1, id,
-		     fmin(sizeof(querystr1) - strlen(querystr1) - 1,
-			  strlen(id)));
-      (void) strncat(querystr1, ",'",
-		     fmin(sizeof(querystr1) - strlen(querystr1) - 1,
-			  strlen(",'")));
-      (void) strncat(querystr1, user_name,
-		     fmin(sizeof(querystr1) - strlen(querystr1) - 1,
-			  strlen(user_name)));
-      (void) strncat(querystr1, "')",
-		     fmin(sizeof(querystr1) - strlen(querystr1) - 1,
-			  strlen("')")));
+      (void) strlcat(querystr1, ",", sizeof(querystr1));
+      (void) strlcat(querystr1, id, sizeof(querystr1));
+      (void) strlcat(querystr1, ",'", sizeof(querystr1));
+      (void) strlcat(querystr1, user_name, sizeof(querystr1));
+      (void) strlcat(querystr1, "')", sizeof(querystr1));
 
       for(i = 0; i < strlen(querystr1); i++)
 	{
