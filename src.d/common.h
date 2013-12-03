@@ -130,30 +130,33 @@ void update(char field[], char *tmp,
 	  else
 	    tmpstr[0] = (char) strtol(hex, &stop, 16);
 
-	  (void) strlcat(tmpstr1, tmpstr, sizeof(tmpstr1));
+	  (void) strncat
+	    (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 	  i += 2;
 	}
       else if(tmp[i] == '+')
 	{
-	  (void) strlcat(tmpstr1, " ", sizeof(tmpstr1));
+	  (void) strncat(tmpstr1, " ", sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 	}
       else if(tmp[i] == '=')
 	{
 	  (void) memset(tmpstr, 0, sizeof(tmpstr));
 	  tmpstr[0] = '\'';
-	  (void) strlcat(tmpstr1, "=", sizeof(tmpstr1));
-	  (void) strlcat(tmpstr1, tmpstr, sizeof(tmpstr1));
+	  (void) strncat(tmpstr1, "=", sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+	  (void) strncat
+	    (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 	}
       else if(isalnum(tmp[i]) || isblank(tmp[i]) || tmp[i] == '.' ||
 	      tmp[i] == '-')
 	{
 	  (void) memset(tmpstr, 0, sizeof(tmpstr));
 	  tmpstr[0] = tmp[i];
-	  (void) strlcat(tmpstr1, tmpstr, sizeof(tmpstr1));
+	  (void) strncat
+	    (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 	}
     }
 
-  (void) strlcat(tmpstr1, "'", sizeof(tmpstr1));
+  (void) strncat(tmpstr1, "'", sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 
   for(i = 0; i < strlen(tmpstr1) - 1; i++)
     {
@@ -167,20 +170,20 @@ void update(char field[], char *tmp,
 	  */
 
 	  if(type == ADD)
-	    (void) strlcat(field, "NULL", field_size);
+	    (void) strncat(field, "NULL", field_size - strlen(field) - 1);
 	  else if(type == EDIT)
-	    (void) strlcat(field, "", field_size);
+	    (void) strncat(field, "", field_size - strlen(field) - 1);
 	}
       else
 	{
 	  tmpstr[0] = tmpstr1[i];
-	  (void) strlcat(field, tmpstr, field_size);
+	  (void) strncat(field, tmpstr, field_size - strlen(field) - 1);
 	}
     }
 
   if(c == 0)
     {
-      (void) strlcat(field, "'", field_size);
+      (void) strncat(field, "'", field_size - strlen(field) - 1);
     }
 
   if(strcmp(field, "description=") == 0)
