@@ -1,67 +1,61 @@
+CHOWN		=	chown -R www-data:www-data
+GCC		=	gcc
 CGI_PATH	=	/usr/lib/cgi-bin/numismatic
 OPTIONS		=	-Wall -Wextra -Wstack-protector \
-			-fPIE -fstack-protector-all -pedantic -pie
-GCC		=	gcc
-CP		=	cp
-RM		=	rm
-LINT		=	lint
-CHOWN		=	chown -R www-data:www-data
-MKDIR		=	mkdir -p
+			-fPIE -fstack-protector-all -fwrapv -pedantic -pie
 
-standard:	add \
+all:		add \
 		delete \
 		edit \
 		load_all \
 		print
 
 INCLUDES	=	common.h
-LOAD_ALL_SRCS 	=	load_all.c
-EDIT_SRCS 	= 	edit.c
-DELETE_SRCS	=	delete.c
+
 ADD_SRCS	=	add.c
+DELETE_SRCS	=	delete.c
+EDIT_SRCS 	= 	edit.c
+LOAD_ALL_SRCS 	=	load_all.c
 PRINT_SRCS	=	print.c
 
 INCLUDE_PATH	=	-I/usr/include -I/usr/local/include
-LIBS		=	-lm -L/usr/lib -lmysqlclient
+LIBS		=	-L/usr/lib -lm -lmysqlclient
 
-load_all:	$(INCLUDES) $(LOAD_ALL_SRCS)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o load_all \
-		$(LOAD_ALL_SRCS) $(LIBS)
+add:		$(ADD_SRCS) $(INCLUDES)
+		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIBS)
 
-edit:		$(INCLUDES) $(EDIT_SRCS)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o edit $(EDIT_SRCS) \
-		$(LIBS)
-
-delete:		$(INCLUDES) $(DELETE_SRCS)
+delete:		$(DELETE_SRCS) $(INCLUDES)
 		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o delete $(DELETE_SRCS) \
 		$(LIBS)
 
-add:		$(INCLUDES) $(ADD_SRCS)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIBS)
+edit:		$(EDIT_SRCS) $(INCLUDES)
+		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o edit $(EDIT_SRCS) \
+		$(LIBS)
 
-print:		$(INCLUDES) $(PRINT_SRCS)
+load_all:	$(LOAD_ALL_SRCS) $(INCLUDES)
+		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o load_all \
+		$(LOAD_ALL_SRCS) $(LIBS)
+
+print:		$(PRINT_SRCS) $(INCLUDES)
 		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o print $(PRINT_SRCS) \
 		$(LIBS)
 
+clean:
+	rm -rf add
+	rm -rf delete
+	rm -rf edit
+	rm -rf load_all
+	rm -rf print
+	rm -rf *.core
+
 install:
-		$(MKDIR) $(CGI_PATH)
-		$(CP) ./load_all $(CGI_PATH)/load_all.cgi
-		$(CP) ./edit $(CGI_PATH)/edit.cgi
-		$(CP) ./delete $(CGI_PATH)/delete.cgi
-		$(CP) ./add $(CGI_PATH)/add.cgi
-		$(CP) ./print $(CGI_PATH)/print.cgi
+		mkdir -p $(CGI_PATH)
+		cp -p ./add $(CGI_PATH)/add.cgi
+		cp -p ./delete $(CGI_PATH)/delete.cgi
+		cp -p ./edit $(CGI_PATH)/edit.cgi
+		cp -p ./load_all $(CGI_PATH)/load_all.cgi
+		cp -p ./print $(CGI_PATH)/print.cgi
 		$(CHOWN) $(CGI_PATH)
 
-lint:	$(LOAD_ALL_SRCS) $(EDIT_SRCS) $(DELETE_SRCS) $(ADD_SRCS)
-	$(LINT) $(INCLUDE_PATH) $>
-
-clean:
-	$(RM) -rf load_all
-	$(RM) -rf edit
-	$(RM) -rf delete
-	$(RM) -rf add
-	$(RM) -rf print
-	$(RM) -rf *.core
-
 purge:
-	$(RM) -rf *~
+	rm -rf *~

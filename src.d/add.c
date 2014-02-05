@@ -1,9 +1,10 @@
 /*
 ** Alexis Megas.
-** (c) 2002, 2004, 2007.
+** (c) 2002 - 2014.
 **
 ** Date        Name                         Purpose
 ** 02/25/2007  Alexis Megas                 More descriptive labels.
+** 02/05/2014  Alexis Megas                 Protect array boundaries.
 */
 
 /*
@@ -26,32 +27,32 @@
 ** strlen("name=") = 5, but change to 5 + 1 = 6, etc.
 */
 
-static MYSQL *connection = NULL;
+static MYSQL *connection = 0;
 static int sizes[] = {6, 9, 7, 13, 13, 8, 6, 10, 9, 12, 10};
 
 int main(int argc, char *argv[])
 {
-  char *id = NULL;
-  char *tmp = NULL;
-  char itmp[10];
+  MYSQL_RES *res_set = 0;
+  MYSQL_ROW row = 0;
   char field[MAX_1];
+  char *id = 0;
   char indata[MAX_1];
+  char itmp[10];
   char querystr[MAX_2];
   char querystr1[MAX_2];
+  char *tmp = 0;
   char user_name[33];
-  MYSQL_RES *res_set = NULL;
-  MYSQL_ROW row = NULL;
-  unsigned int i = 0;
-  unsigned int j = 0;
-  unsigned int k = 0;
-  unsigned int error = 0;
+  int error = 0;
+  size_t i = 0;
+  size_t j = 0;
+  size_t k = 0;
 
   (void) printf("Content-type: text/html\n\n");
   (void) printf("<html>\n");
   (void) printf("<title>Numismatic - Add</title>\n");
   (void) printf("<body bgcolor=\"white\">\n");
 
-  if(argc >= 2 && strstr(argv[1], "?") == NULL)
+  if(argc >= 2 && strstr(argv[1], "?") == 0)
     {
       (void) printf("<form action=\"/cgi-bin/numismatic/add.cgi?%s?\" "
 		    "method=\"post\">\n", argv[1]);
@@ -93,7 +94,7 @@ int main(int argc, char *argv[])
       for(i = YEAR_START; i <= YEAR_END; i++)
 	{
 	  (void) memset(itmp, 0, sizeof(itmp));
-	  (void) snprintf(itmp, sizeof(itmp), "%ud", i);
+	  (void) snprintf(itmp, sizeof(itmp), "%u", (unsigned int) i);
 	  (void) printf("<option>%s", itmp);
 	}
 
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
       for(i = 1; i <= MAX_QUAN; i++)
 	{
 	  (void) memset(itmp, 0, sizeof(itmp));
-	  (void) snprintf(itmp, sizeof(itmp), "%ud", i);
+	  (void) snprintf(itmp, sizeof(itmp), "%u", (unsigned int) i);
 	  (void) printf("<option>%s", itmp);
 	}
 
@@ -130,7 +131,7 @@ int main(int argc, char *argv[])
     }
   else
     {
-      if((connection = mysql_init(NULL)) == NULL)
+      if((connection = mysql_init(0)) == 0)
 	{
 	  (void) printf("<center>%sInitialization error.%s<br><br>"
 			"</center>\n",
@@ -153,8 +154,8 @@ int main(int argc, char *argv[])
 			    MYPASSWORD,
 			    MYDB,
 			    0,
-			    NULL,
-			    0) == NULL)
+			    0,
+			    0) == 0)
 	{
 	  (void) printf("<center>%sConnection error.%s<br><br>"
 			"</center>\n",
@@ -181,7 +182,7 @@ int main(int argc, char *argv[])
       (void) memset(querystr, 0, sizeof(querystr));
       (void) snprintf(querystr,
 		      sizeof(querystr),
-		      "SELECT IFNULL(MAX(ABS(id)), 1) + 1 FROM coin WHERE "
+		      "SELECT IF0(MAX(ABS(id)), 1) + 1 FROM coin WHERE "
 		      "user_name = '%s'", user_name);
 
       if(mysql_query(connection, querystr) != 0)
@@ -192,7 +193,7 @@ int main(int argc, char *argv[])
 
       res_set = mysql_store_result(connection);
 
-      if(res_set == NULL)
+      if(res_set == 0)
 	{
 	  error = 1;
 	  goto error;
@@ -200,7 +201,7 @@ int main(int argc, char *argv[])
 
       row = mysql_fetch_row(res_set);
 
-      if(row == NULL)
+      if(row == 0)
 	{
 	  error = 1;
 	  goto error;
@@ -210,7 +211,7 @@ int main(int argc, char *argv[])
       (void) memset(querystr, 0, sizeof(querystr));
       (void) memset(indata, 0, sizeof(indata));
 
-      if(fgets(indata, (int) sizeof(indata) - 1, stdin) == NULL)
+      if(fgets(indata, (int) sizeof(indata), stdin) == 0)
 	{
 	  error = 1;
 	  goto error;
@@ -220,7 +221,7 @@ int main(int argc, char *argv[])
       (void) strncpy(querystr, "INSERT INTO coin VALUES (",
 		     sizeof(querystr) - 1);
 
-      while(tmp != NULL)
+      while(tmp != 0)
 	{
 	  if(i++ <= 6)
 	    {
@@ -231,20 +232,41 @@ int main(int argc, char *argv[])
 	      (void) strncpy(field, tmp, sizeof(field) - 1);
 	    }
 
-	  (void) strncat
-	    (querystr, field, sizeof(querystr) - strlen(querystr) - 1);
-	  (void) strncat
-	    (querystr, ", ", sizeof(querystr) - strlen(querystr) - 1);
-	  tmp = strtok(NULL, "&");
+	  if(sizeof(querystr) > strlen(querystr))
+	    (void) strncat
+	      (querystr, field, sizeof(querystr) - strlen(querystr) - 1);
+
+	  if(sizeof(querystr) > strlen(querystr))
+	    (void) strncat
+	      (querystr, ", ", sizeof(querystr) - strlen(querystr) - 1);
+
+	  tmp = strtok(0, "&");
 	}
 
-      querystr[strlen(querystr) - 2] = '\0';
-      (void) strncat(querystr, ",", sizeof(querystr) - strlen(querystr) - 1);
-      (void) strncat(querystr, id, sizeof(querystr) - strlen(querystr) - 1);
-      (void) strncat(querystr, ")", sizeof(querystr) - strlen(querystr) - 1);
+      if(strlen(querystr) > 2)
+	querystr[strlen(querystr) - 2] = '\0';
+
+      if(sizeof(querystr) > strlen(querystr))
+	(void) strncat(querystr, ",",
+		       sizeof(querystr) - strlen(querystr) - 1);
+
+      if(sizeof(querystr) > strlen(querystr))
+	(void) strncat(querystr, id,
+		       sizeof(querystr) - strlen(querystr) - 1);
+
+      if(sizeof(querystr) > strlen(querystr))
+	(void) strncat(querystr, ")",
+		       sizeof(querystr) - strlen(querystr) - 1);
+
       i = 0;
 
-      while(querystr[i] != '(' && i++ < strlen(querystr));
+      while(querystr[i] != '(')
+	{
+	  if(i >= sizeof(querystr) || i >= strlen(querystr))
+	    break;
+
+	  i += 1;
+	}
 
       (void) memset(querystr1, 0, sizeof(querystr1));
       (void) strncpy(querystr1, querystr, sizeof(querystr1) - 1);
@@ -255,23 +277,38 @@ int main(int argc, char *argv[])
       {
 	i += sizes[k++];
 
-	while(querystr[i] != ',' && i < strlen(querystr))
+	while(i < sizeof(querystr) &&
+	      i < strlen(querystr) &&
+	      querystr[i] != ',')
 	  {
-	    querystr1[j++] = querystr[i++];
+	    if(j < sizeof(querystr1))
+	      querystr1[j++] = querystr[i++];
+	    else
+	      break;
 	  }
       }
 
-      (void) strncat
-	(querystr1, ",", sizeof(querystr1) - strlen(querystr1) - 1);
-      (void) strncat(querystr1, id, sizeof(querystr1) - strlen(querystr1) - 1);
-      (void) strncat
-	(querystr1, ",'", sizeof(querystr1) - strlen(querystr1) - 1);
-      (void) strncat
-	(querystr1, user_name, sizeof(querystr1) - strlen(querystr1) - 1);
-      (void) strncat
-	(querystr1, "')", sizeof(querystr1) - strlen(querystr1) - 1);
+      if(sizeof(querystr1) > strlen(querystr1))
+	(void) strncat
+	  (querystr1, ",", sizeof(querystr1) - strlen(querystr1) - 1);
 
-      for(i = 0; i < strlen(querystr1); i++)
+      if(sizeof(querystr1) > strlen(querystr1))
+	(void) strncat(querystr1, id,
+		       sizeof(querystr1) - strlen(querystr1) - 1);
+
+      if(sizeof(querystr1) > strlen(querystr1))
+	(void) strncat
+	  (querystr1, ",'", sizeof(querystr1) - strlen(querystr1) - 1);
+
+      if(sizeof(querystr1) > strlen(querystr1))
+	(void) strncat
+	  (querystr1, user_name, sizeof(querystr1) - strlen(querystr1) - 1);
+
+      if(sizeof(querystr1) > strlen(querystr1))
+	(void) strncat
+	  (querystr1, "')", sizeof(querystr1) - strlen(querystr1) - 1);
+
+      for(i = 0; i < sizeof(querystr1) && i < strlen(querystr1); i++)
 	{
 	  if(querystr1[i] == '=')
 	    {

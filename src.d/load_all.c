@@ -14,28 +14,28 @@
 
 #include <mysql/mysql.h>
 
-static MYSQL *connection = NULL;
+static MYSQL *connection = 0;
 
 int main(int argc, char *argv[])
 {
-  int ct = 0;
-  char *tmp = NULL;
-  char query[MAX_2];
+  MYSQL_RES *res_set = 0;
+  MYSQL_ROW row = 0;
   char indata[MAX_1];
+  char query[MAX_2];
+  char *tmp = 0;
   char user_name[33];
-  long quantities = 0;
-  double total = 0.0;
-  double mrk_total = 0.0;
   double acq_total = 0.0;
-  MYSQL_RES *res_set = NULL;
-  MYSQL_ROW row = NULL;
-  unsigned int i = 0;
+  double mrk_total = 0.0;
+  double total = 0.0;
+  int ct = 0;
+  long quantities = 0;
+  size_t i = 0;
 
   /*
   ** Load the entries and display them in HTML-friendly format.
   */
 
-  if((connection = mysql_init(NULL)) == NULL)
+  if((connection = mysql_init(0)) == 0)
     {
       (void) printf("Content-type: text/html\n\n");
       (void) printf("<html>\n");
@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
 			MYPASSWORD,
 			MYDB,
 			0,
-			NULL,
-			0) == NULL)
+			0,
+			0) == 0)
     {
       (void) printf("Content-type: text/html\n\n");
       (void) printf("<html>\n");
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
   (void) printf("Content-type: text/html\n\n");
 
-  if((tmp = getenv("REMOTE_USER")) == NULL)
+  if((tmp = getenv("REMOTE_USER")) == 0)
     tmp = "unknown";
 
   (void) memset(user_name, '\0', sizeof(user_name));
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 		  "composition, weight, year, face_val, "
 		  "acq_val, market_val, quantity, "
 		  "quantity * market_val total, "
-		  "IFNULL(description, ''), id FROM coin "
+		  "IF0(description, ''), id FROM coin "
 		  "WHERE id > 0 AND user_name = '%s' ORDER BY %s",
 		  user_name, indata);
 
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
     {
       res_set = mysql_store_result(connection);
 
-      if(res_set == NULL)
+      if(res_set == 0)
 	{
 	  /*
 	  ** We do not have entries.
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 	  (void) printf("</tr>\n");
 	  (void) printf("<form name=\"mainform\">\n");
 
-	  while((row = mysql_fetch_row(res_set)) != NULL)
+	  while((row = mysql_fetch_row(res_set)) != 0)
 	    {
 	      ct += 1;
 	      (void) printf("<tr bgcolor=\"beige\" align=\"center\">\n");

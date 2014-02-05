@@ -10,16 +10,16 @@
 
 #include <mysql/mysql.h>
 
-static MYSQL *connection = NULL;
+static MYSQL *connection = 0;
 
 int main(int argc, char *argv[])
 {
-  unsigned int i = 0;
-  unsigned int j = 0;
-  int ct = 0;
+  MYSQL_RES *res_set = 0;
+  MYSQL_ROW row = 0;
   char query[MAX_2];
-  MYSQL_RES *res_set = NULL;
-  MYSQL_ROW row = NULL;
+  int ct = 0;
+  size_t i = 0;
+  size_t j = 0;
 
   (void) printf("Content-type: text/html\n\n");
   (void) printf("<html>\n");
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
   if(argc != 2)
     goto error;
 
-  if((connection = mysql_init(NULL)) == NULL)
+  if((connection = mysql_init(0)) == 0)
     {
       (void) printf("<center>%sInitialization error.%s<br><br></center>\n",
 		    FBEG, FEND);
@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
 			MYPASSWORD,
 			MYDB,
 			0,
-			NULL,
-			0) == NULL)
+			0,
+			0) == 0)
     {
       (void) printf("<center>%sConnection error.%s<br><br></center>\n",
 		    FBEG, FEND);
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   (void) snprintf(query,
 		  sizeof(query),
 		  "SELECT name, country, grade, "
-		  "IFNULL(description, ''), "
+		  "IF0(description, ''), "
 		  "composition, weight, year, face_val, "
 		  "acq_val, market_val, quantity, "
 		  "quantity * market_val total "
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     {
       res_set = mysql_store_result(connection);
 
-      if(res_set == NULL)
+      if(res_set == 0)
 	{
 	  /*
 	  ** We do not have entries.
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 	  ct = 0;
 	  (void) printf("<table>");
 
-	  while((row = mysql_fetch_row(res_set)) != NULL)
+	  while((row = mysql_fetch_row(res_set)) != 0)
 	    {
 	      ct += 1;
 	      (void) printf("<td><table border>\n");

@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2003, 2005, 2006, 2013 Alexis Megas.
+** Copyright (c) 2003 - 2014 Alexis Megas.
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,8 @@
 
 #define MYDB "xnumismatic_db"
 #define MYHOST "localhost"
-#define MYUSER "xnumismatic_user"
 #define MYPASSWORD "xnumismatic_user"
+#define MYUSER "xnumismatic_user"
 
 #define FBEG "<font size=2>"
 #define FEND "</font>"
@@ -52,21 +52,12 @@
 #define MAX_1 1024
 #define MAX_2 2048
 #define MAX_QUAN 500
-#define YEAR_START 1400
 #define YEAR_END 2015
+#define YEAR_START 1400
 
 #define ADD 0
 #define EDIT 1
 
-const char *GRADES[] = {"N/A",
-			"AU",
-			"BU",
-			"Extra Fine",
-			"Fine",
-			"Mint",
-			"Poor",
-			"Proof",
-			"Very Fine"};
 const char *COUNTRIES[] = {"N/A",
 			   "Australia",
 			   "Austria",
@@ -86,6 +77,15 @@ const char *COUNTRIES[] = {"N/A",
 			   "United Kingdom",
 			   "United States Of America",
 			   "Wales"};
+const char *GRADES[] = {"N/A",
+			"AU",
+			"BU",
+			"Extra Fine",
+			"Fine",
+			"Mint",
+			"Poor",
+			"Proof",
+			"Very Fine"};
 
 /*
 ** -- Function Declarations --
@@ -104,8 +104,8 @@ void update(char field[], char *tmp,
   char *stop;
   char tmpstr[3];
   char tmpstr1[MAX_1];
-  unsigned int c = 0;
-  unsigned int i = 0;
+  size_t c = 0;
+  size_t i = 0;
 
   hex[0] = '0';
   hex[1] = 'x';
@@ -119,10 +119,15 @@ void update(char field[], char *tmp,
       if(tmp[i] == '%')
 	{
 	  (void) memset(tmpstr, 0, sizeof(tmpstr));
-	  hex[2] = tmp[i + 1];
-	  hex[3] = tmp[i + 2];
 
-	  if(tmp[i + 1] == '2' && tmp[i + 2] == '7')
+	  if(i + 1 < strlen(tmp))
+	    hex[2] = tmp[i + 1];
+
+	  if(i + 2 < strlen(tmp))
+	    hex[3] = tmp[i + 2];
+
+	  if(i + 1 < strlen(tmp) && i + 2 < strlen(tmp) &&
+	     tmp[i + 1] == '2' && tmp[i + 2] == '7')
 	    {
 	      tmpstr[0] = '\\';
 	      tmpstr[1] = '\'';
@@ -130,33 +135,45 @@ void update(char field[], char *tmp,
 	  else
 	    tmpstr[0] = (char) strtol(hex, &stop, 16);
 
-	  (void) strncat
-	    (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+	  if(sizeof(tmpstr1) > strlen(tmpstr1))
+	    (void) strncat
+	      (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+
 	  i += 2;
 	}
       else if(tmp[i] == '+')
 	{
-	  (void) strncat(tmpstr1, " ", sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+	  if(sizeof(tmpstr1) > strlen(tmpstr1))
+	    (void) strncat(tmpstr1, " ",
+			   sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 	}
       else if(tmp[i] == '=')
 	{
 	  (void) memset(tmpstr, 0, sizeof(tmpstr));
 	  tmpstr[0] = '\'';
-	  (void) strncat(tmpstr1, "=", sizeof(tmpstr1) - strlen(tmpstr1) - 1);
-	  (void) strncat
-	    (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+
+	  if(sizeof(tmpstr1) > strlen(tmpstr1))
+	    (void) strncat(tmpstr1, "=",
+			   sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+
+	  if(sizeof(tmpstr1) > strlen(tmpstr1))
+	    (void) strncat
+	      (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 	}
       else if(isalnum(tmp[i]) || isblank(tmp[i]) || tmp[i] == '.' ||
 	      tmp[i] == '-')
 	{
 	  (void) memset(tmpstr, 0, sizeof(tmpstr));
 	  tmpstr[0] = tmp[i];
-	  (void) strncat
-	    (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+
+	  if(sizeof(tmpstr1) > strlen(tmpstr1))
+	    (void) strncat
+	      (tmpstr1, tmpstr, sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 	}
     }
 
-  (void) strncat(tmpstr1, "'", sizeof(tmpstr1) - strlen(tmpstr1) - 1);
+  if(sizeof(tmpstr1) > strlen(tmpstr1))
+    (void) strncat(tmpstr1, "'", sizeof(tmpstr1) - strlen(tmpstr1) - 1);
 
   for(i = 0; i < strlen(tmpstr1) - 1; i++)
     {
@@ -170,20 +187,29 @@ void update(char field[], char *tmp,
 	  */
 
 	  if(type == ADD)
-	    (void) strncat(field, "NULL", field_size - strlen(field) - 1);
+	    {
+	      if(field_size > strlen(field))
+		(void) strncat(field, "NULL", field_size - strlen(field) - 1);
+	    }
 	  else if(type == EDIT)
-	    (void) strncat(field, "", field_size - strlen(field) - 1);
+	    {
+	      if(field_size > strlen(field))
+		(void) strncat(field, "", field_size - strlen(field) - 1);
+	    }
 	}
       else
 	{
 	  tmpstr[0] = tmpstr1[i];
-	  (void) strncat(field, tmpstr, field_size - strlen(field) - 1);
+
+	  if(field_size > strlen(field))
+	    (void) strncat(field, tmpstr, field_size - strlen(field) - 1);
 	}
     }
 
   if(c == 0)
     {
-      (void) strncat(field, "'", field_size - strlen(field) - 1);
+      if(field_size > strlen(field))
+	(void) strncat(field, "'", field_size - strlen(field) - 1);
     }
 
   if(strcmp(field, "description=") == 0)

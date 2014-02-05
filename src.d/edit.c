@@ -10,20 +10,20 @@
 
 #include <mysql/mysql.h>
 
-static MYSQL *connection = NULL;
+static MYSQL *connection = 0;
 
 int main(int argc, char *argv[])
 {
-  char *id = NULL;
-  char *tmp = NULL;
-  char itmp[10];
+  MYSQL_RES *res_set = 0;
+  MYSQL_ROW row = 0;
   char field[MAX_1];
+  char *id = 0;
   char indata[MAX_1];
+  char itmp[10];
   char querystr[MAX_2];
-  char *user_name = NULL;
-  MYSQL_RES *res_set = NULL;
-  MYSQL_ROW row = NULL;
-  unsigned int i = 0;
+  char *tmp = 0;
+  char *user_name = 0;
+  size_t i = 0;
 
   if(argc < 1)
     {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   (void) printf("<title>Numismatic - Edit</title>\n");
   (void) printf("<body bgcolor=\"white\">\n");
 
-  if((connection = mysql_init(NULL)) == NULL)
+  if((connection = mysql_init(0)) == 0)
     {
       (void) printf("<center>%sConnection error.%s<br><br>"
 		    "</center>\n",
@@ -69,8 +69,8 @@ int main(int argc, char *argv[])
 			MYPASSWORD,
 			MYDB,
 			0,
-			NULL,
-			0) == NULL)
+			0,
+			0) == 0)
     {
       (void) printf("<center>%sConnection error.%s<br><br>"
 		    "</center>\n",
@@ -92,18 +92,18 @@ int main(int argc, char *argv[])
       */
 
       id = strtok(argv[1], "\\?");
-      user_name = strtok(NULL, "\\?");
+      user_name = strtok(0, "\\?");
 
-      if(id == NULL)
+      if(id == 0)
 	id = "?";
-      else if(user_name == NULL)
+      else if(user_name == 0)
 	user_name = "unknown";
 
       (void) memset(querystr, 0, sizeof(querystr));
       (void) snprintf(querystr,
 		      sizeof(querystr),
 		      "SELECT name, country, grade, "
-		      "IFNULL(description, ''), "
+		      "IF0(description, ''), "
 		      "composition, weight, year, face_val, "
 		      "acq_val, market_val, quantity, id FROM coin "
 		      "WHERE id = %s AND user_name = '%s'",
@@ -112,7 +112,8 @@ int main(int argc, char *argv[])
       if(mysql_query(connection, querystr) == 0)
 	{
 	  res_set = mysql_store_result(connection);
-	  if(res_set == NULL)
+
+	  if(res_set == 0)
 	    {
 	      /*
 	      ** Entry missing.
@@ -127,7 +128,7 @@ int main(int argc, char *argv[])
 	      ** Process the query.
 	      */
 
-	      if((row = mysql_fetch_row(res_set)) != NULL)
+	      if((row = mysql_fetch_row(res_set)) != 0)
 		{
 		  (void) printf("<form action=\"/cgi-bin/numismatic/"
 				"edit.cgi\" "
@@ -187,7 +188,8 @@ int main(int argc, char *argv[])
 		  for(i = YEAR_START; i <= YEAR_END; i++)
 		    {
 		      (void) memset(itmp, 0, sizeof(itmp));
-		      (void) snprintf(itmp, sizeof(itmp), "%ud", i);
+		      (void) snprintf
+			(itmp, sizeof(itmp), "%u", (unsigned int) i);
 
 		      if(strcmp(row[6], itmp) == 0)
 			(void) printf("<option selected>%s", itmp);
@@ -218,7 +220,8 @@ int main(int argc, char *argv[])
 		  for(i = 1; i <= MAX_QUAN; i++)
 		    {
 		      (void) memset(itmp, 0, sizeof(itmp));
-		      (void) snprintf(itmp, sizeof(itmp), "%ud", i);
+		      (void) snprintf
+			(itmp, sizeof(itmp), "%u", (unsigned int) i);
 
 		      if(strcmp(row[10], itmp) == 0)
 			(void) printf("<option selected>%s", itmp);
@@ -259,14 +262,14 @@ int main(int argc, char *argv[])
     {
       (void) memset(indata, 0, sizeof(indata));
 
-      if(fgets(indata, (int) sizeof(indata) - 1, stdin) == NULL)
+      if(fgets(indata, (int) sizeof(indata) - 1, stdin) == 0)
 	{
 	  goto error;
 	}
 
       id = tmp = strtok(indata, "&");
 
-      if(id == NULL)
+      if(id == 0)
 	{
 	  goto error;
 	}
@@ -275,11 +278,11 @@ int main(int argc, char *argv[])
       (void) memset(querystr, 0, sizeof(querystr));
       (void) strncpy(querystr, "UPDATE coin SET ", sizeof(querystr) - 1);
 
-      while(tmp != NULL)
+      while(tmp != 0)
 	{
-	  tmp = strtok(NULL, "&");
+	  tmp = strtok(0, "&");
 
-	  if(tmp != NULL)
+	  if(tmp != 0)
 	    {
 	      if(i++ <= 6)
 		{
@@ -291,18 +294,26 @@ int main(int argc, char *argv[])
 		  (void) strncpy(field, tmp, sizeof(field) - 1);
 		}
 
-	      (void) strncat
-		(querystr, field, sizeof(querystr) - strlen(querystr) - 1);
-	      (void) strncat
-		(querystr, ", ", sizeof(querystr) - strlen(querystr) - 1);
+	      if(sizeof(querystr) > strlen(querystr))
+		(void) strncat
+		  (querystr, field, sizeof(querystr) - strlen(querystr) - 1);
+
+	      if(sizeof(querystr) > strlen(querystr))
+		(void) strncat
+		  (querystr, ", ", sizeof(querystr) - strlen(querystr) - 1);
 	    }
 	}
 
-      querystr[strlen(querystr) - 2] = '\0';
-      (void) strncat
-	(querystr, " WHERE ", sizeof(querystr) - strlen(querystr) - 1);
-      (void) strncat
-	(querystr, id, sizeof(querystr) - strlen(querystr) - 1);
+      if(strlen(querystr) > 2)
+	querystr[strlen(querystr) - 2] = '\0';
+
+      if(sizeof(querystr) > strlen(querystr))
+	(void) strncat
+	  (querystr, " WHERE ", sizeof(querystr) - strlen(querystr) - 1);
+
+      if(sizeof(querystr) > strlen(querystr))
+	(void) strncat
+	  (querystr, id, sizeof(querystr) - strlen(querystr) - 1);
 
     error:
 

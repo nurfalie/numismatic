@@ -10,19 +10,19 @@
 
 #include <mysql/mysql.h>
 
-static MYSQL *connection = NULL;
+static MYSQL *connection = 0;
 
 int main(int argc, char *argv[])
 {
-  char *tmp = NULL;
   char querystr[MAX_2];
+  char *tmp = 0;
 
   (void) printf("Content-type: text/html\n\n");
   (void) printf("<html>\n");
   (void) printf("<title>Numismatic - Delete</title>\n");
   (void) printf("<body bgcolor=\"white\">\n");
 
-  if((connection = mysql_init(NULL)) == NULL)
+  if((connection = mysql_init(0)) == 0)
     {
       (void) printf("<center>%sInitialization error.%s<br><br></center>\n",
 		    FBEG, FEND);
@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
 			MYPASSWORD,
 			MYDB,
 			0,
-			NULL,
-			0) == NULL)
+			0,
+			0) == 0)
     {
       (void) printf("<center>%sConnection error.%s<br><br></center>\n",
 		    FBEG, FEND);
@@ -53,12 +53,12 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  if(argc >= 2 && argv[1] != NULL)
+  if(argc >= 2 && argv[1] != 0)
     {
       tmp = strtok(argv[1], ",");
       (void) printf("%s\n", FBEG);
 
-      while(tmp != NULL)
+      while(tmp != 0)
 	{
 	  (void) memset(querystr, 0, sizeof(querystr));
 	  (void) snprintf(querystr, sizeof(querystr),
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	      (void) printf("Unable to delete ID %s.<br>\n", tmp);
 	    }
 
-	  tmp = strtok(NULL, ",");
+	  tmp = strtok(0, ",");
 	}
 
       (void) printf("%s\n", FEND);
