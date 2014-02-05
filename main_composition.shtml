@@ -1,11 +1,11 @@
-    <script src="./main.js">
-    </script>
+<script src="./main.js">
+</script>
 
-    <html>
+<html>
   <head>
     <title>Numismatic - Main</title>
   </head>
   <body bgcolor="white">
     <!--#include virtual="/cgi-bin/numismatic/load_all.cgi?composition"-->
   </body>
-    </html>
+</html>
