@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
   (void) printf("<title>Numismatic - Add</title>\n");
   (void) printf("<body bgcolor=\"white\">\n");
 
-  if(argc >= 2 && strstr(argv[1], "?") == 0)
+  if(argc >= 2 && argv[1] && strstr(argv[1], "?") == 0)
     {
       (void) printf("<form action=\"/cgi-bin/numismatic/add.cgi?%s?\" "
 		    "method=\"post\">\n", argv[1]);
@@ -177,7 +177,11 @@ int main(int argc, char *argv[])
       ** -2 => ganoof\?, we need to remove the \?.
       */
 
-      (void) strncpy(user_name, argv[1], sizeof(user_name) - 1);
+      if(argc >= 2 && argv[1])
+	(void) strncpy(user_name, argv[1], sizeof(user_name) - 1);
+      else
+	(void) strncpy(user_name, "unknown", sizeof(user_name) - 1);
+
       (void) memset(querystr, 0, sizeof(querystr));
       (void) snprintf(querystr,
 		      sizeof(querystr),
@@ -274,7 +278,8 @@ int main(int argc, char *argv[])
 
       while(k < sizeof(sizes) / sizeof(sizes[0]))
       {
-	i += sizes[k++];
+	i += (size_t) sizes[(int) k];
+	k += 1;
 
 	while(i < sizeof(querystr) &&
 	      i < strlen(querystr) &&

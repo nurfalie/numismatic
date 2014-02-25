@@ -91,13 +91,13 @@ const char *GRADES[] = {"N/A",
 ** -- Function Declarations --
 */
 
-void update(char [], char *, const size_t, const short);
+void update(char *, char *, const size_t, const short);
 
 /*
 ** -- Function Definitions --
 */
 
-void update(char field[], char *tmp,
+void update(char *field, char *tmp,
 	    const size_t field_size, const short type)
 {
   char hex[5];
@@ -106,6 +106,9 @@ void update(char field[], char *tmp,
   char tmpstr1[MAX_1];
   size_t c = 0;
   size_t i = 0;
+
+  if(!field || !tmp)
+    return;
 
   hex[0] = '0';
   hex[1] = 'x';
@@ -213,7 +216,10 @@ void update(char field[], char *tmp,
     }
 
   if(strcmp(field, "description=") == 0)
-    (void) snprintf(field, field_size, "%s", "description=NULL");
+    {
+      (void) memset(field, 0, field_size);
+      (void) snprintf(field, field_size, "%s", "description=NULL");
+    }
 }
 
 #endif

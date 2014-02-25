@@ -1,7 +1,7 @@
 CHOWN		=	chown -R www-data:www-data
 GCC		=	gcc
-CGI_PATH	=	/usr/lib/cgi-bin/numismatic
-OPTIONS		=	-Wall -Wextra -Wstack-protector \
+OPTIONS		=	-Wall -Wconversion -Wextra -Wformat \
+			-Wstack-protector \
 			-fPIE -fstack-protector-all -fwrapv -pedantic -pie
 
 all:		add \
@@ -10,6 +10,7 @@ all:		add \
 		load_all \
 		print
 
+CGI_PATH	=	/usr/lib/cgi-bin/numismatic
 INCLUDES	=	common.h
 
 ADD_SRCS	=	add.c
@@ -19,7 +20,7 @@ LOAD_ALL_SRCS 	=	load_all.c
 PRINT_SRCS	=	print.c
 
 INCLUDE_PATH	=	-I/usr/include -I/usr/local/include
-LIBS		=	-L/usr/lib -lm -lmysqlclient
+LIBS		=	-lmysqlclient
 
 add:		$(ADD_SRCS) $(INCLUDES)
 		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIBS)
@@ -48,14 +49,16 @@ clean:
 	rm -rf print
 	rm -rf *.core
 
+distclean: clean purge
+
 install:
-		mkdir -p $(CGI_PATH)
-		cp -p ./add $(CGI_PATH)/add.cgi
-		cp -p ./delete $(CGI_PATH)/delete.cgi
-		cp -p ./edit $(CGI_PATH)/edit.cgi
-		cp -p ./load_all $(CGI_PATH)/load_all.cgi
-		cp -p ./print $(CGI_PATH)/print.cgi
-		$(CHOWN) $(CGI_PATH)
+	mkdir -p $(CGI_PATH)
+	cp -p ./add $(CGI_PATH)/add.cgi
+	cp -p ./delete $(CGI_PATH)/delete.cgi
+	cp -p ./edit $(CGI_PATH)/edit.cgi
+	cp -p ./load_all $(CGI_PATH)/load_all.cgi
+	cp -p ./print $(CGI_PATH)/print.cgi
+	$(CHOWN) $(CGI_PATH)
 
 purge:
 	rm -rf *~

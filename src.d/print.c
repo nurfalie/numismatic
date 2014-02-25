@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
   (void) printf("<title>Numismatic - Print</title>\n");
   (void) printf("<body bgcolor=\"white\">\n");
 
-  if(argc != 2)
+  if(argc != 2 || argv[1] == 0)
     goto error;
 
   if((connection = mysql_init(0)) == 0)

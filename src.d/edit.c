@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  if(argc > 1)
+  if(argc > 1 && argv[1] != 0)
     {
       /*
       ** Load and display the row information.
@@ -237,10 +237,6 @@ int main(int argc, char *argv[])
 		  (void) printf("</center>\n");
 		  (void) printf("%s\n", FEND);
 		  (void) printf("</form>\n");
-
-		  /*
-		  ** Free some space.
-		  */
 		}
 	      else
 		{

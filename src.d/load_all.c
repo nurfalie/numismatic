@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
   (void) snprintf(user_name, sizeof(user_name), "%s", tmp);
   (void) memset(indata, 0, sizeof(indata));
 
-  if(argc > 1)
+  if(argc > 1 && argv[1] != 0)
     {
       (void) strncpy(indata, argv[1], sizeof(indata) - 1);
     }
@@ -182,10 +182,10 @@ int main(int argc, char *argv[])
 
 	      for(i = 0; i < mysql_num_fields(res_set) - 1; i++)
 		{
-		  (void) printf("<td>%s%s%s%s</td>\n", FBEG,
-				(i == 7 || i == 8 || i == 10) ? "$" : "",
-				(strlen(row[i]) == 0) ? "&nbsp" : row[i],
-				FEND);
+		  (void) printf
+		    ("<td>%s%s%s%s</td>\n", FBEG,
+		     (i == 7 || i == 8 || i == 10) ? "$" : "",
+		     (strlen(row[i]) == 0) ? "&nbsp" : row[i], FEND);
 
 		  if(i == 7)
 		    acq_total += atof(row[i]);
