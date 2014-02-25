@@ -55,8 +55,8 @@
 #define YEAR_END 2015
 #define YEAR_START 1400
 
-short ADD = 0;
-short EDIT = 1;
+const short ADD = 0;
+const short EDIT = 1;
 
 const char *COUNTRIES[] = {"N/A",
 			   "Australia",
