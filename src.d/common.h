@@ -55,9 +55,6 @@
 #define YEAR_END 2015
 #define YEAR_START 1400
 
-const short ADD = 0;
-const short EDIT = 1;
-
 const char *COUNTRIES[] = {"N/A",
 			   "Australia",
 			   "Austria",
@@ -86,6 +83,8 @@ const char *GRADES[] = {"N/A",
 			"Poor",
 			"Proof",
 			"Very Fine"};
+const short ADD = 0;
+const short EDIT = 1;
 
 /*
 ** -- Function Declarations --
