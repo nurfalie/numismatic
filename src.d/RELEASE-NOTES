@@ -1,6 +1,6 @@
 1.4.4 (02/28/2014)
 
-1. Added the Wconversion and Wformat compiler flags.
+1. Added the Wformat and ansi compiler flags.
 2. Guard against empty pointers.
 3. Protect argv[] access.
 

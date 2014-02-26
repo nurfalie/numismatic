@@ -1,8 +1,9 @@
-CHOWN		=	chown -R www-data:www-data
-GCC		=	gcc
-OPTIONS		=	-Wall -Wconversion -Wextra -Wformat \
-			-Wstack-protector \
-			-fPIE -fstack-protector-all -fwrapv -pedantic -pie
+CHOWN		= chown -R www-data:www-data
+GCC		= gcc
+OPTIONS		= -Wall -Werror -Wextra -Wformat \
+		  -Wstack-protector \
+		  -ansi -fPIE -fstack-protector-all \
+		  -fwrapv -pedantic -pie
 
 all:		add \
 		delete \
@@ -10,17 +11,17 @@ all:		add \
 		load_all \
 		print
 
-CGI_PATH	=	/usr/lib/cgi-bin/numismatic
-INCLUDES	=	common.h
+CGI_PATH	= /usr/lib/cgi-bin/numismatic
+INCLUDES	= common.h
 
-ADD_SRCS	=	add.c
-DELETE_SRCS	=	delete.c
-EDIT_SRCS 	= 	edit.c
-LOAD_ALL_SRCS 	=	load_all.c
-PRINT_SRCS	=	print.c
+ADD_SRCS	= add.c
+DELETE_SRCS	= delete.c
+EDIT_SRCS 	=  edit.c
+LOAD_ALL_SRCS 	= load_all.c
+PRINT_SRCS	= print.c
 
-INCLUDE_PATH	=	-I/usr/include -I/usr/local/include
-LIBS		=	-lmysqlclient
+INCLUDE_PATH	= -I/usr/include -I/usr/local/include
+LIBS		= -lmysqlclient
 
 add:		$(ADD_SRCS) $(INCLUDES)
 		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIBS)
