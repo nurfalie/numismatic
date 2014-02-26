@@ -2,7 +2,7 @@ CHOWN		= chown -R www-data:www-data
 GCC		= gcc
 OPTIONS		= -Wall -Werror -Wextra -Wformat \
 		  -Wstack-protector \
-		  -ansi -fPIE -fstack-protector-all \
+		  -fPIE -fstack-protector-all \
 		  -fwrapv -pedantic -pie
 
 all:		add \
