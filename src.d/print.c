@@ -172,7 +172,6 @@ int main(int argc, char *argv[])
     (void) printf("<br>");
 
  error:
-
   (void) printf("<center>\n");
 
   if(ct != 0)
