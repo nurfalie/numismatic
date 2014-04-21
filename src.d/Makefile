@@ -1,7 +1,8 @@
 CHOWN		= chown -R www-data:www-data
 GCC		= gcc
-OPTIONS		= -Wall -Werror -Wextra -Wformat \
-		  -Wstack-protector \
+OPTIONS		= -Wall -Werror -Wextra -Wformat=2 \
+		  -Wpointer-arith -Wstack-protector \
+		  -Wstrict-overflow=5 -Wstrict-prototypes \
 		  -fPIE -fstack-protector-all \
 		  -fwrapv -pedantic -pie
 
@@ -16,7 +17,7 @@ INCLUDES	= common.h
 
 ADD_SRCS	= add.c
 DELETE_SRCS	= delete.c
-EDIT_SRCS 	=  edit.c
+EDIT_SRCS 	= edit.c
 LOAD_ALL_SRCS 	= load_all.c
 PRINT_SRCS	= print.c
 
