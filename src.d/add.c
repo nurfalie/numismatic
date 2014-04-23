@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
       (void) memset(querystr, 0, sizeof(querystr));
       (void) memset(indata, 0, sizeof(indata));
 
-      if(fgets(indata, (int) sizeof(indata), stdin) == 0)
+      if(!stdin || fgets(indata, (int) sizeof(indata), stdin) == 0)
 	{
 	  error = 1;
 	  goto error;
@@ -227,13 +227,9 @@ int main(int argc, char *argv[])
       while(tmp != 0)
 	{
 	  if(i++ <= 6)
-	    {
-	      update(field, tmp, sizeof(field), ADD);
-	    }
+	    update(field, tmp, sizeof(field), ADD);
 	  else
-	    {
-	      (void) strncpy(field, tmp, sizeof(field) - 1);
-	    }
+	    (void) strncpy(field, tmp, sizeof(field) - 1);
 
 	  if(sizeof(querystr) > strlen(querystr))
 	    (void) strncat
@@ -313,12 +309,8 @@ int main(int argc, char *argv[])
 	  (querystr1, "')", sizeof(querystr1) - strlen(querystr1) - 1);
 
       for(i = 0; i < sizeof(querystr1) && i < strlen(querystr1); i++)
-	{
-	  if(querystr1[i] == '=')
-	    {
-	      querystr1[i] = ',';
-	    }
-	}
+	if(querystr1[i] == '=')
+	  querystr1[i] = ',';
 
       error = 0;
 
@@ -347,12 +339,10 @@ int main(int argc, char *argv[])
     error:
 
       if(error == 1)
-	{
-	  (void) printf("<center>%sInsert error.<br>"
-			"Please be sure to complete all required "
-			"fields.%s<br><br></center>\n",
-			FBEG, FEND);
-	}
+	(void) printf("<center>%sInsert error.<br>"
+		      "Please be sure to complete all required "
+		      "fields.%s<br><br></center>\n",
+		      FBEG, FEND);
 
       mysql_close(connection);
     }

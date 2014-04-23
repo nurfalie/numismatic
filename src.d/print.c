@@ -164,9 +164,7 @@ int main(int argc, char *argv[])
 	}
     }
   else
-    {
-      (void) printf("<center>%sFetch error.%s</center>\n", FBEG, FEND);
-    }
+    (void) printf("<center>%sFetch error.%s</center>\n", FBEG, FEND);
 
   if(ct != 0)
     (void) printf("<br>");

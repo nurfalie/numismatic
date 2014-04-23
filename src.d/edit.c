@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  if(argc > 1 && argv[1] != 0)
+  if(argc > 1 && argv[1])
     {
       /*
       ** Load and display the row information.
@@ -114,14 +114,12 @@ int main(int argc, char *argv[])
 	  res_set = mysql_store_result(connection);
 
 	  if(res_set == 0)
-	    {
-	      /*
-	      ** Entry missing.
-	      */
+	    /*
+	    ** Entry missing.
+	    */
 
-	      (void) printf("<center>%sEntry missing.%s<br><br></center>\n",
-			    FBEG, FEND);
-	    }
+	    (void) printf("<center>%sEntry missing.%s<br><br></center>\n",
+			  FBEG, FEND);
 	  else
 	    {
 	      /*
@@ -239,36 +237,28 @@ int main(int argc, char *argv[])
 		  (void) printf("</form>\n");
 		}
 	      else
-		{
-		  (void) printf("<center>%sEntry missing.%s<br><br>"
-				"</center>\n",
-				FBEG, FEND);
-		}
+		(void) printf("<center>%sEntry missing.%s<br><br>"
+			      "</center>\n",
+			      FBEG, FEND);
 
 	      mysql_free_result(res_set);
 	    }
 	}
       else
-	{
-	  (void) printf("<center>%sFetch error.%s<br><br></center>\n",
-			FBEG, FEND);
-	}
+	(void) printf("<center>%sFetch error.%s<br><br></center>\n",
+		      FBEG, FEND);
     }
   else
     {
       (void) memset(indata, 0, sizeof(indata));
 
-      if(fgets(indata, (int) sizeof(indata) - 1, stdin) == 0)
-	{
-	  goto error;
-	}
+      if(!stdin || fgets(indata, (int) sizeof(indata) - 1, stdin) == 0)
+	goto error;
 
       id = tmp = strtok(indata, "&");
 
       if(id == 0)
-	{
-	  goto error;
-	}
+	goto error;
 
       (void) memset(field, 0, sizeof(field));
       (void) memset(querystr, 0, sizeof(querystr));
@@ -281,9 +271,7 @@ int main(int argc, char *argv[])
 	  if(tmp != 0)
 	    {
 	      if(i++ <= 6)
-		{
-		  update(field, tmp, sizeof(field), EDIT);
-		}
+		update(field, tmp, sizeof(field), EDIT);
 	      else
 		{
 		  (void) memset(field, 0, sizeof(field));
@@ -314,12 +302,10 @@ int main(int argc, char *argv[])
     error:
 
       if(mysql_query(connection, querystr) != 0)
-	{
-	  (void) printf("<center>%sUpdate error.<br>"
-			"Please be sure to complete all required "
-			"fields.%s<br><br></center>\n",
-			FBEG, FEND);
-	}
+	(void) printf("<center>%sUpdate error.<br>"
+		      "Please be sure to complete all required "
+		      "fields.%s<br><br></center>\n",
+		      FBEG, FEND);
       else
 	{
 	  (void) printf("<center>%sInformation saved.%s<br><br>"

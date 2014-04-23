@@ -75,14 +75,10 @@ int main(int argc, char *argv[])
   (void) snprintf(user_name, sizeof(user_name), "%s", tmp);
   (void) memset(indata, 0, sizeof(indata));
 
-  if(argc > 1 && argv[1] != 0)
-    {
-      (void) strncpy(indata, argv[1], sizeof(indata) - 1);
-    }
+  if(argc > 1 && argv[1])
+    (void) strncpy(indata, argv[1], sizeof(indata) - 1);
   else
-    {
-      (void) strncpy(indata, "name", sizeof(indata) - 1);
-    }
+    (void) strncpy(indata, "name", sizeof(indata) - 1);
 
   /*
   ** Load and display the rows.
