@@ -1,9 +1,9 @@
 /*
-** Copyright (c) 2002 - Eternity Alexis Megas.
+** Copyright (c) 2002 - eternity, Alexis Megas.
 **
-** Date        Name                         Purpose
-** 02/25/2007  Alexis Megas                 More descriptive labels.
-** 02/05/2014  Alexis Megas                 Protect array boundaries.
+** Date        Name          Purpose
+** 02/25/2007  Alexis Megas  More descriptive labels.
+** 02/05/2014  Alexis Megas  Protect array boundaries.
 */
 
 /*
