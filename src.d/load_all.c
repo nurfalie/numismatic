@@ -2,6 +2,8 @@
 ** -- Standard Includes --
 */
 
+#include <errno.h>
+
 /*
 ** -- Local Includes --
 */
@@ -20,14 +22,17 @@ int main(int argc, char *argv[])
 {
   MYSQL_RES *res_set = 0;
   MYSQL_ROW row = 0;
+  char *endptr;
   char indata[MAX_1];
   char query[MAX_2];
   char *tmp = 0;
   char user_name[33];
   double acq_total = 0.0;
+  double d = 0.0;
   double mrk_total = 0.0;
   double total = 0.0;
   int ct = 0;
+  long l = 0;
   long quantities = 0;
   size_t i = 0;
 
@@ -184,11 +189,26 @@ int main(int argc, char *argv[])
 		     (strlen(row[i]) == 0) ? "&nbsp" : row[i], FEND);
 
 		  if(i == 7)
-		    acq_total += atof(row[i]);
+		    {
+		      d = strtod(row[i], &endptr);
+
+		      if(!(errno == EINVAL || errno == ERANGE || endptr == row[i]))
+			acq_total += d;
+		    }
 		  else if(i == 8)
-		    mrk_total += atof(row[i]);
+		    {
+		      d = strtod(row[i], &endptr);
+
+		      if(!(errno == EINVAL || errno == ERANGE || endptr == row[i]))
+			mrk_total += d;
+		    }
 		  else if(i == 9)
-		    quantities += atol(row[i]);
+		    {
+		      l = strtol(row[i], &endptr, 10);
+
+		      if(!(errno == EINVAL || errno == ERANGE || endptr == row[i]))
+			quantities += l;
+		    }
 		  else if(i == 10)
 		    total += atof(row[i]);
 		}
