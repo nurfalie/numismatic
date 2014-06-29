@@ -1,3 +1,8 @@
+1.4.6 (07/01/2014)
+
+1. Allow usage of clang.
+2. Version remains at 1.4.6.
+
 1.4.6 (06/14/2014)
 
 1. Use strtod() and strtol() instead of atof() and atol().

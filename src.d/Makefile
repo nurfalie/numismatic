@@ -1,5 +1,4 @@
 CHOWN		= chown -R www-data:www-data
-GCC		= gcc
 OPTIONS		= -Wall -Werror -Wextra -Wformat=2 \
 		  -Wpointer-arith -Wstack-protector \
 		  -Wstrict-overflow=5 -Wstrict-prototypes \
@@ -25,22 +24,22 @@ INCLUDE_PATH	= -I/usr/include -I/usr/local/include
 LIBS		= -lmysqlclient
 
 add:		$(ADD_SRCS) $(INCLUDES)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIBS)
+		$(CC) $(OPTIONS) $(INCLUDE_PATH) -o add $(ADD_SRCS) $(LIBS)
 
 delete:		$(DELETE_SRCS) $(INCLUDES)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o delete $(DELETE_SRCS) \
+		$(CC) $(OPTIONS) $(INCLUDE_PATH) -o delete $(DELETE_SRCS) \
 		$(LIBS)
 
 edit:		$(EDIT_SRCS) $(INCLUDES)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o edit $(EDIT_SRCS) \
+		$(CC) $(OPTIONS) $(INCLUDE_PATH) -o edit $(EDIT_SRCS) \
 		$(LIBS)
 
 load_all:	$(LOAD_ALL_SRCS) $(INCLUDES)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o load_all \
+		$(CC) $(OPTIONS) $(INCLUDE_PATH) -o load_all \
 		$(LOAD_ALL_SRCS) $(LIBS)
 
 print:		$(PRINT_SRCS) $(INCLUDES)
-		$(GCC) $(OPTIONS) $(INCLUDE_PATH) -o print $(PRINT_SRCS) \
+		$(CC) $(OPTIONS) $(INCLUDE_PATH) -o print $(PRINT_SRCS) \
 		$(LIBS)
 
 clean:
