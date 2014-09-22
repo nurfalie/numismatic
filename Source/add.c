@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2002 - eternity, Alexis Megas.
+** Copyright (c) 2002 - present, Alexis Megas.
 **
 ** Date        Name          Purpose
 ** 02/25/2007  Alexis Megas  More descriptive labels.
